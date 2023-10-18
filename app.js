@@ -7,6 +7,7 @@ const app = express();
 
 // useful error class to throw
 const { NotFoundError, BadRequestError } = require("./expressError");
+const { convertStrNums } = require("./utils");
 
 const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 
@@ -14,17 +15,12 @@ const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 /** Finds mean of nums in qs: returns {operation: "mean", result } */
 app.get("/mean", function(req, res){
   if(!req.query.nums){
-    throw new BadRequestError("nums are required.")
+    throw new BadRequestError(MISSING)
   }
-// TODO: move logic to utils function
+
 // TODO: check out difference between isNaN function and calling on Number class method
-  const nums = req.query.nums.split(',').map(function(x){
-    if(isNaN(Number(x))){
-      throw new BadRequestError(`${x} is not a number.`);
-    } else {
-      return Number(x);
-    }
-  });
+  const strNums = req.query.nums.split(',');
+  const nums = convertStrNums(strNums);
 
   return res.json({response: {
     operation: "mean",
@@ -36,16 +32,11 @@ app.get("/mean", function(req, res){
 /** Finds median of nums in qs: returns {operation: "median", result } */
 app.get("/median", function(req, res){
   if(!req.query.nums){
-    throw new BadRequestError("nums are required.")
+    throw new BadRequestError(MISSING)
   }
 
-  const nums = req.query.nums.split(',').map(function(x){
-      if(isNaN(Number(x))){
-        throw new BadRequestError(`${x} is not a number.`);
-      } else {
-        return Number(x);
-      }
-    });
+  const strNums = req.query.nums.split(',');
+  const nums = convertStrNums(strNums);
 
   return res.json({response: {
     operation: "median",
@@ -57,16 +48,11 @@ app.get("/median", function(req, res){
 /** Finds mode of nums in qs: returns {operation: "mode", result } */
 app.get("/mode", function(req, res){
   if(!req.query.nums){
-    throw new BadRequestError("nums are required.")
+    throw new BadRequestError(MISSING)
   }
 
-  const nums = req.query.nums.split(',').map(function(x){
-    if(isNaN(Number(x))){
-      throw new BadRequestError(`${x} is not a number.`);
-    } else {
-      return Number(x);
-    }
-  });
+  const strNums = req.query.nums.split(',');
+  const nums = convertStrNums(strNums);
 
   return res.json({response: {
     operation: "mode",
