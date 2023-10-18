@@ -2,7 +2,7 @@
 /** Simple demo Express app. */
 
 const express = require("express");
-const {findMean, findMedian,findMode,} = require("./stats");
+const { findMean, findMedian, findMode, } = require("./stats");
 const app = express();
 
 // useful error class to throw
@@ -13,53 +13,77 @@ const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 
 
 /** Finds mean of nums in qs: returns {operation: "mean", result } */
-app.get("/mean", function(req, res){
-  if(!req.query.nums){
-    throw new BadRequestError(MISSING)
+app.get("/mean", function (req, res) {
+  if (!req.query.nums) {
+    throw new BadRequestError(MISSING);
   }
 
-// TODO: check out difference between isNaN function and calling on Number class method
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({response: {
-    operation: "mean",
-    value: findMean(nums)
-  }});
-
-})
+  return res.json({
+    response: {
+      operation: "mean",
+      value: findMean(nums)
+    }
+  });
+});
 
 /** Finds median of nums in qs: returns {operation: "median", result } */
-app.get("/median", function(req, res){
-  if(!req.query.nums){
-    throw new BadRequestError(MISSING)
+app.get("/median", function (req, res) {
+  if (!req.query.nums) {
+    throw new BadRequestError(MISSING);
   }
 
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({response: {
-    operation: "median",
-    value: findMedian(nums)
-  }});
-
-})
+  return res.json({
+    response: {
+      operation: "median",
+      value: findMedian(nums)
+    }
+  });
+});
 
 /** Finds mode of nums in qs: returns {operation: "mode", result } */
-app.get("/mode", function(req, res){
-  if(!req.query.nums){
-    throw new BadRequestError(MISSING)
+app.get("/mode", function (req, res) {
+  if (!req.query.nums) {
+    throw new BadRequestError(MISSING);
   }
 
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({response: {
-    operation: "mode",
-    value: findMode(nums)
-  }});
+  return res.json({
+    response: {
+      operation: "mode",
+      value: findMode(nums)
+    }
+  });
+});
 
-})
+/**
+ * Runs all statistics on nums in qs: returns
+ * { operation: "all", mean, median, mode }
+ * */
+app.get("/all", function (req, res) {
+  if (!req.query.nums) {
+    throw new BadRequestError(MISSING);
+  }
+
+  const strNums = req.query.nums.split(',');
+  const nums = convertStrNums(strNums);
+
+  return res.json({
+    response: {
+      operation: "all",
+      mean: findMean(nums),
+      median: findMedian(nums),
+      mode: findMode(nums)
+    }
+  });
+});
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res) {
