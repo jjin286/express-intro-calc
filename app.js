@@ -7,7 +7,7 @@ const app = express();
 
 // useful error class to throw
 const { NotFoundError, BadRequestError } = require("./expressError");
-const { convertStrNums } = require("./utils");
+const { convertStrNums, writeFile } = require("./utils");
 
 const MISSING = "Expected key `nums` with comma-separated list of numbers.";
 
@@ -21,12 +21,18 @@ app.get("/mean", function (req, res) {
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({
+  const response = {
     response: {
       operation: "mean",
       value: findMean(nums)
     }
-  });
+  };
+
+  if (req.query.save === "true") {
+    writeFile("results.json", JSON.stringify(response));
+  }
+
+  return res.json(response);
 });
 
 /** Finds median of nums in qs: returns {operation: "median", result } */
@@ -38,12 +44,18 @@ app.get("/median", function (req, res) {
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({
+  const response = {
     response: {
       operation: "median",
       value: findMedian(nums)
     }
-  });
+  };
+
+  if (req.query.save === "true") {
+    writeFile("results.json", JSON.stringify(response));
+  }
+
+  return res.json(response);
 });
 
 /** Finds mode of nums in qs: returns {operation: "mode", result } */
@@ -55,12 +67,18 @@ app.get("/mode", function (req, res) {
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({
+  const response = {
     response: {
       operation: "mode",
       value: findMode(nums)
     }
-  });
+  };
+
+  if (req.query.save === "true") {
+    writeFile("results.json", JSON.stringify(response));
+  }
+
+  return res.json(response);
 });
 
 /**
@@ -75,14 +93,20 @@ app.get("/all", function (req, res) {
   const strNums = req.query.nums.split(',');
   const nums = convertStrNums(strNums);
 
-  return res.json({
+  const response = {
     response: {
       operation: "all",
       mean: findMean(nums),
       median: findMedian(nums),
       mode: findMode(nums)
     }
-  });
+  };
+
+  if (req.query.save === "true") {
+    writeFile("results.json", JSON.stringify(response));
+  }
+
+  return res.json(response);
 });
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
